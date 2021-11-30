@@ -282,25 +282,25 @@ class PostProcessor(threading.Thread):
                 self._log("Exception while clearing cache path '{}'".format(str(e)), level='error')
 
     def __copy_file(self, file_in, file_out, destination_files, plugin_id):
-        self._log("Copy file triggered by ({}) {} --> {}".format(plugin_id, file_in, file_out))
+        self._log("Move file triggered by ({}) {} --> {}".format(plugin_id, file_in, file_out))
         try:
-            before_checksum = common.get_file_checksum(file_in)
+            #before_checksum = common.get_file_checksum(file_in)
             if not os.path.exists(file_in):
                 self._log("Error - file_in path does not exist! '{}'".format(file_in), level="error")
                 time.sleep(1)
-            shutil.copyfile(file_in, file_out)
-            after_checksum = common.get_file_checksum(file_out)
+            shutil.move(file_in, file_out)
+            #after_checksum = common.get_file_checksum(file_out)
             # Compare the checksums on the copied file to ensure it is still correct
-            if before_checksum != after_checksum:
-                # Something went wrong during that file copy
-                self._log("Copy function failed during postprocessor file movement '{}' on file '{}'".format(
-                    plugin_id, file_in), level='warning')
-                file_move_processes_success = False
-            else:
-                destination_files.append(file_out)
-                file_move_processes_success = True
+            # if before_checksum != after_checksum:
+            #     # Something went wrong during that file copy
+            #     self._log("Copy function failed during postprocessor file movement '{}' on file '{}'".format(
+            #         plugin_id, file_in), level='warning')
+            #     file_move_processes_success = False
+            # else:
+            destination_files.append(file_out)
+            file_move_processes_success = True
         except Exception as e:
-            self._log("Exception while copying file {} to {}:".format(file_in, file_out),
+            self._log("Exception while moving file {} to {}:".format(file_in, file_out),
                       message2=str(e), level="exception")
             file_move_processes_success = False
 
